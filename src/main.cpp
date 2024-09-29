@@ -1,26 +1,36 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+
 using namespace std;
 
 vector<pair<int, int>> mergeIntervals(vector<pair<int, int>> &intervals)
 {
-    if (intervals.empty())
-        return {};
 
-    sort(intervals.begin(), intervals.end());
+    if (intervals.empty())
+    {
+        return {};
+    }
+
+    sort(intervals.begin(), intervals.end(), [](const pair<int, int> &a, const pair<int, int> &b)
+         { return a.first < b.first; });
 
     vector<pair<int, int>> merged;
+
     merged.push_back(intervals[0]);
 
-    for (int i = 1; i < intervals.size(); ++i)
+    for (int i = 1; i < intervals.size(); i++)
     {
-        if (intervals[i].first <= merged.back().second)
+
+        auto &last = merged.back();
+
+        if (intervals[i].first <= last.second)
         {
-            merged.back().second = max(merged.back().second, intervals[i].second);
+            last.second = max(last.second, intervals[i].second);
         }
         else
         {
+
             merged.push_back(intervals[i]);
         }
     }
@@ -35,20 +45,20 @@ int main()
     cin >> n;
 
     vector<pair<int, int>> intervals(n);
-    cout << "Enter the intervals (start end):" << endl;
+
     for (int i = 0; i < n; ++i)
     {
+        cout << "Enter interval " << i + 1 << " (start end): ";
         cin >> intervals[i].first >> intervals[i].second;
     }
 
     vector<pair<int, int>> merged = mergeIntervals(intervals);
 
-    cout << "Merged intervals:" << endl;
+    cout << "Merged Intervals: " << endl;
     for (const auto &interval : merged)
     {
-        cout << "[" << interval.first << ", " << interval.second << "] ";
+        cout << "[" << interval.first << ", " << interval.second << "]" << endl;
     }
-    cout << endl;
 
     return 0;
 }
